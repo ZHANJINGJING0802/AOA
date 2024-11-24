@@ -172,13 +172,13 @@
             let nonwordAccuracyText = `${nonwordAccuracy.toFixed(2)}% (${nonwordCorrectAttempts}/${nonwordAttempts})`;
 
             if (earlywordAccuracy === 100) {
-                earlywordAccuracyText += ' <span class="flower">🌸</span>';
+                earlywordAccuracyText += ' <span class="flower">🌻</span>';
             }
             if (latewordAccuracy === 100) {
-                latewordAccuracyText += ' <span class="flower">🌸</span>';
+                latewordAccuracyText += ' <span class="flower">🌻</span>';
             }
             if (nonwordAccuracy === 100) {
-                nonwordAccuracyText += ' <span class="flower">🌸</span>';
+                nonwordAccuracyText += ' <span class="flower">🌻</span>';
             }
 
             document.getElementById('earlyword-accuracy').innerHTML = earlywordAccuracyText;
