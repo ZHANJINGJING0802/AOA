@@ -97,8 +97,8 @@
 
     <script>
         const earlywords = ["木兰", "丁香", "水仙"];
-        const latewords = ["海棠", "茉莉", "蔷薇"];
-        const nonwords = ["雏药", "蜀奎", "扶搡"];
+        const latewords = ["海棠", "桔梗", "蔷薇"];
+        const nonwords = ["雏药", "蜀奎", "扶颡"];
         let allWords = [];
         let startTime;
         let currentWord;
@@ -141,22 +141,22 @@
             if (currentWord.isWord === isWord) {
                 if (currentWord.type === 'early') {
                     earlywordCorrectAttempts++;
-                    earlywordTotalReactionTime += reactionTime;
                 } else if (currentWord.type === 'late') {
                     latewordCorrectAttempts++;
-                    latewordTotalReactionTime += reactionTime;
                 } else if (currentWord.type === 'nonword') {
                     nonwordCorrectAttempts++;
-                    nonwordTotalReactionTime += reactionTime;
                 }
             }
 
             if (currentWord.type === 'early') {
                 earlywordAttempts++;
+                earlywordTotalReactionTime += reactionTime;
             } else if (currentWord.type === 'late') {
                 latewordAttempts++;
+                latewordTotalReactionTime += reactionTime;
             } else if (currentWord.type === 'nonword') {
                 nonwordAttempts++;
+                nonwordTotalReactionTime += reactionTime;
             }
 
             displayWord();
