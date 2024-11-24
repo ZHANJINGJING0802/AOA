@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Test</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .word {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+        }
+        .stats {
+            margin-top: 20px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 300px;
+            padding: 5px;
+            font-size: 1em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        .flower {
+            color: red;
+            font-size: 1.5em;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <button id="start-button" onclick="startTest()">Start Test</button>
+    <div class="word" id="word" style="display: none;">Loading...</div>
+    <div class="buttons" id="test-buttons" style="display: none;">
+        <button onclick="handleClick(true)">Word</button>
+        <button onclick="handleClick(false)">Non-word</button>
+    </div>
+    <div class="stats" id="stats" style="display: none;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Accuracy</th>
+                    <th>Reaction Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Early Words</td>
+                    <td id="earlyword-accuracy">0% (0/0)</td>
+                    <td id="earlyword-reaction-time">0 ms</td>
+                </tr>
+                <tr>
+                    <td>Late Words</td>
+                    <td id="lateword-accuracy">0% (0/0)</td>
+                    <td id="lateword-reaction-time">0 ms</td>
+                </tr>
+                <tr>
+                    <td>Non-words</td>
+                    <td id="nonword-accuracy">0% (0/0)</td>
+                    <td id="nonword-reaction-time">0 ms</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const earlywords = ["木兰", "丁香", "水仙"];
+        const latewords = ["海棠", "茉莉", "蔷薇"];
+        const nonwords = ["雏药", "蜀奎", "扶搡"];
+        let allWords = [];
+        let startTime;
+        let currentWord;
+        let earlywordAttempts = 0;
+        let earlywordCorrectAttempts = 0;
+        let earlywordTotalReactionTime = 0;
+        let latewordAttempts = 0;
+        let latewordCorrectAttempts = 0;
+        let latewordTotalReactionTime = 0;
+        let nonwordAttempts = 0;
+        let nonwordCorrectAttempts = 0;
+        let nonwordTotalReactionTime = 0;
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function initializeWords() {
+            allWords = earlywords.map(word => ({ word, type: 'early', isWord: true }))
+                .concat(latewords.map(word => ({ word, type: 'late', isWord: true })))
+                .concat(nonwords.map(word => ({ word, type: 'nonword', isWord: false })));
+            shuffle(allWords);
+        }
+
+        function displayWord() {
+            if (allWords.length === 0) {
+                displayStats();
+                return;
+            }
+            currentWord = allWords.pop();
+            document.getElementById('word').textContent = currentWord.word;
+            startTime = new Date().getTime();
+        }
+
+        function handleClick(isWord) {
+            const reactionTime = new Date().getTime() - startTime;
+            if (currentWord.isWord === isWord) {
+                if (currentWord.type === 'early') {
+                    earlywordCorrectAttempts++;
+                    earlywordTotalReactionTime += reactionTime;
+                } else if (currentWord.type === 'late') {
+                    latewordCorrectAttempts++;
+                    latewordTotalReactionTime += reactionTime;
+                } else if (currentWord.type === 'nonword') {
+                    nonwordCorrectAttempts++;
+                    nonwordTotalReactionTime += reactionTime;
+                }
+            }
+
+            if (currentWord.type === 'early') {
+                earlywordAttempts++;
+            } else if (currentWord.type === 'late') {
+                latewordAttempts++;
+            } else if (currentWord.type === 'nonword') {
+                nonwordAttempts++;
+            }
+
+            displayWord();
+        }
+
+        function displayStats() {
+            const earlywordAccuracy = (earlywordCorrectAttempts / earlywordAttempts) * 100;
+            const latewordAccuracy = (latewordCorrectAttempts / latewordAttempts) * 100;
+            const nonwordAccuracy = (nonwordCorrectAttempts / nonwordAttempts) * 100;
+
+            let earlywordAccuracyText = `${earlywordAccuracy.toFixed(2)}% (${earlywordCorrectAttempts}/${earlywordAttempts})`;
+            let latewordAccuracyText = `${latewordAccuracy.toFixed(2)}% (${latewordCorrectAttempts}/${latewordAttempts})`;
+            let nonwordAccuracyText = `${nonwordAccuracy.toFixed(2)}% (${nonwordCorrectAttempts}/${nonwordAttempts})`;
+
+            if (earlywordAccuracy === 100) {
+                earlywordAccuracyText += ' <span class="flower">🌸</span>';
+            }
+            if (latewordAccuracy === 100) {
+                latewordAccuracyText += ' <span class="flower">🌸</span>';
+            }
+            if (nonwordAccuracy === 100) {
+                nonwordAccuracyText += ' <span class="flower">🌸</span>';
+            }
+
+            document.getElementById('earlyword-accuracy').innerHTML = earlywordAccuracyText;
+            document.getElementById('earlyword-reaction-time').textContent = `${earlywordTotalReactionTime} ms`;
+            document.getElementById('lateword-accuracy').innerHTML = latewordAccuracyText;
+            document.getElementById('lateword-reaction-time').textContent = `${latewordTotalReactionTime} ms`;
+            document.getElementById('nonword-accuracy').innerHTML = nonwordAccuracyText;
+            document.getElementById('nonword-reaction-time').textContent = `${nonwordTotalReactionTime} ms`;
+
+            document.getElementById('stats').style.display = 'block';
+            document.getElementById('word').style.display = 'none';
+            document.getElementById('test-buttons').style.display = 'none';
+        }
+
+        function startTest() {
+            // 重置统计数据
+            earlywordAttempts = 0;
+            earlywordCorrectAttempts = 0;
+            earlywordTotalReactionTime =0;
+            latewordAttempts = 0;
+            latewordCorrectAttempts = 0;
+            latewordTotalReactionTime = 0;
+            nonwordAttempts = 0;
+            nonwordCorrectAttempts = 0;
+            nonwordTotalReactionTime = 0;
+
+            // 隐藏输入框和开始按钮，显示单词和测试按钮
+            document.getElementById('start-button').style.display = 'none';
+            document.querySelectorAll('.input-group').forEach(group => group.style.display = 'none');
+            document.getElementById('word').style.display = 'block';
+            document.getElementById('test-buttons').style.display = 'flex';
+            document.getElementById('stats').style.display = 'none';
+
+            // 初始化单词列表并显示第一个单词
+            initializeWords();
+            displayWord();
+        }
+    </script>
+</body>
+</html>
